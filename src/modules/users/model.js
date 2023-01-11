@@ -6,9 +6,7 @@ const { Schema } = mongoose;
 module.exports = function () {
   const User = new Schema(
     {
-      name: { type: String },
-      email: { type: String, unique: true, required: true },
-      password: { type: String, required: true },
+      name: { type: String, unique: true, required: true },
       role: { type: String, enum: ["admin", "editor", "member"] },
       date_joined: { type: Date },
     },
