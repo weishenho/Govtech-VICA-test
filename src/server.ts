@@ -5,6 +5,7 @@ import { accessibleRecordsPlugin } from "@casl/mongoose";
 import "express-async-errors";
 import cors from "cors";
 import userRoutes from "./modules/users";
+import bookRoutes from "./modules/books";
 import auth from "./modules/auth";
 
 dotenv.config();
@@ -24,8 +25,9 @@ db.once("open", function () {
 
 const authRoutes = auth(app);
 app.use("/api", authRoutes);
-
 app.use("/api", userRoutes);
+app.use("/api", bookRoutes);
+
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   if (err.name === "ForbiddenError") {
     res.status(403);
