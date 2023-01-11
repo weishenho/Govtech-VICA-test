@@ -5,6 +5,7 @@ import { accessibleRecordsPlugin } from "@casl/mongoose";
 import "express-async-errors";
 import cors from "cors";
 import userRoutes from "./modules/users";
+import auth from "./modules/auth";
 
 dotenv.config();
 
@@ -20,6 +21,9 @@ db.on("error", console.error.bind(console, "connection error: "));
 db.once("open", function () {
   console.log("Connected to MongoDB successfully");
 });
+
+const authRoutes = auth(app);
+app.use("/api", authRoutes);
 
 app.use("/api", userRoutes);
 
