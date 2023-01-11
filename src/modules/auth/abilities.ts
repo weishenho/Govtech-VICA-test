@@ -11,9 +11,9 @@ export default function defineAbilityFor(user: { role: string }) {
       can("read", "User");
       can("manage", "Book");
       break;
-    default:
+    case "member":
       can("read", "Book");
-      can('update', 'Book', ['isBorrowed']);
+      can("update", "Book", ["isBorrowed"]);
       break;
   }
 

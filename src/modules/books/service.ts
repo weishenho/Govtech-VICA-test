@@ -41,7 +41,8 @@ const create = async (req: Request, res: Response) => {
 const update = async (req: Request, res: Response) => {
   ForbiddenError.from(req.ability).throwUnlessCan(
     "update",
-    bookModel.modelName
+    bookModel.modelName,
+    "*"
   );
   if (!isValidObjectId(req.params.id)) {
     throw new NotFound("Book is not found");
