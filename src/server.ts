@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import { accessibleRecordsPlugin } from "@casl/mongoose";
 import "express-async-errors";
 import cors from "cors";
+import userRoutes from "./modules/users";
 
 dotenv.config();
 
@@ -20,9 +21,7 @@ db.once("open", function () {
   console.log("Connected to MongoDB successfully");
 });
 
-app.get("/", (req: Request, res: Response) => {
-  res.send("Express + TypeScript Server");
-});
+app.use("/api", userRoutes);
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);
