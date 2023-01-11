@@ -2,14 +2,18 @@ import { NotFound } from "http-errors";
 import { Request, Response } from "express";
 import userModel from "./model";
 import { isValidObjectId } from "mongoose";
+import { ForbiddenError } from "@casl/ability";
 
 const findAll = async (req: Request, res: Response) => {
+  ForbiddenError.from(req.ability).throwUnlessCan("read", userModel);
   const users = await userModel.find({});
 
   res.send({ data: users });
 };
 
 const find = async (req: Request, res: Response) => {
+  ForbiddenError.from(req.ability).throwUnlessCan("read", userModel);
+
   if (!isValidObjectId(req.params.id)) {
     throw new NotFound("User is not found");
   }
@@ -24,6 +28,8 @@ const find = async (req: Request, res: Response) => {
 };
 
 const update = async (req: Request, res: Response) => {
+  ForbiddenError.from(req.ability).throwUnlessCan("update", userModel);
+
   if (!isValidObjectId(req.params.id)) {
     throw new NotFound("User is not found");
   }
@@ -41,6 +47,8 @@ const update = async (req: Request, res: Response) => {
 };
 
 const create = async (req: Request, res: Response) => {
+  ForbiddenError.from(req.ability).throwUnlessCan("create", userModel);
+
   const user = new userModel(req.body);
 
   await user.save();

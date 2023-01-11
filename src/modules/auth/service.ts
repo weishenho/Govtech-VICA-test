@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { Request, Response } from "express";
 import { BadRequest } from "http-errors";
 import jwt from "jsonwebtoken";
+import ability from "./abilities";
 
 const create = async (req: Request, res: Response) => {
   const { name } = req.body || {};
@@ -23,6 +24,7 @@ const create = async (req: Request, res: Response) => {
     role: user.role,
     name: user.name,
     userId: user.id,
+    rules: ability(user),
   });
 };
 

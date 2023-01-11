@@ -2,6 +2,7 @@ import passport from "passport";
 import { configurePassport } from "./jwt";
 import * as session from "./service";
 import { Express, Router } from "express";
+import ability from "./abilities";
 
 export default (app: Express) => {
   const router = Router();
@@ -17,5 +18,9 @@ export default (app: Express) => {
   router.use(
     passport.authenticate("jwt", { session: false, failWithError: true })
   );
+  router.use((req: any, _, next) => {
+    req.ability = ability(req.user);
+    next();
+  });
   return router;
 };
