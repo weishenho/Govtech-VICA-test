@@ -56,4 +56,16 @@ const create = async (req: Request, res: Response) => {
   res.status(201).send({ data: user });
 };
 
-export { findAll, find, update, create };
+const destroy = async (req: Request, res: Response) => {
+  ForbiddenError.from(req.ability).throwUnlessCan("delete", userModel);
+
+  const user = await userModel.findById(req.params.id);
+
+  if (user) {
+    await user.remove();
+  }
+
+  res.send({ item: user });
+};
+
+export { findAll, find, update, create, destroy };
