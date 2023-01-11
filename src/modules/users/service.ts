@@ -6,7 +6,7 @@ import { isValidObjectId } from "mongoose";
 const findAll = async (req: Request, res: Response) => {
   const users = await userModel.find({});
 
-  res.send({ item: users });
+  res.send({ data: users });
 };
 
 const find = async (req: Request, res: Response) => {
@@ -20,7 +20,7 @@ const find = async (req: Request, res: Response) => {
     throw new NotFound("User is not found");
   }
 
-  res.send({ item: user });
+  res.send({ data: user });
 };
 
 const update = async (req: Request, res: Response) => {
@@ -37,7 +37,7 @@ const update = async (req: Request, res: Response) => {
   user.set(body);
   await user.save();
 
-  res.send({ item: user });
+  res.send({ data: user });
 };
 
 const create = async (req: Request, res: Response) => {
@@ -45,7 +45,7 @@ const create = async (req: Request, res: Response) => {
 
   await user.save();
 
-  res.status(201).send({ item: user });
+  res.status(201).send({ data: user });
 };
 
 export { findAll, find, update, create };

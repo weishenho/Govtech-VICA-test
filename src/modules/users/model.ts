@@ -1,6 +1,5 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const { Schema } = mongoose;
 const User = new Schema(
   {
     name: { type: String, unique: true, required: true },
