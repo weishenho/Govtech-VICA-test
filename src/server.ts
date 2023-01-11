@@ -1,4 +1,4 @@
-import express, { Express, Request, Response } from "express";
+import express, { Express, NextFunction, Request, Response } from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
 import { accessibleRecordsPlugin } from "@casl/mongoose";
@@ -26,6 +26,14 @@ const authRoutes = auth(app);
 app.use("/api", authRoutes);
 
 app.use("/api", userRoutes);
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  if (err.name === "ForbiddenError") {
+    res.status(403);
+  } else {
+    res.status(500);
+  }
+  res.send({ error: err.message || err });
+});
 
 app.listen(port, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${port}`);

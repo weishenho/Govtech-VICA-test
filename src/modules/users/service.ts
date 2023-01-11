@@ -5,14 +5,14 @@ import { isValidObjectId } from "mongoose";
 import { ForbiddenError } from "@casl/ability";
 
 const findAll = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan("read", userModel);
+  ForbiddenError.from(req.ability).throwUnlessCan("read", userModel.modelName);
   const users = await userModel.find({});
 
   res.send({ data: users });
 };
 
 const find = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan("read", userModel);
+  ForbiddenError.from(req.ability).throwUnlessCan("read", userModel.modelName);
 
   if (!isValidObjectId(req.params.id)) {
     throw new NotFound("User is not found");
@@ -28,7 +28,10 @@ const find = async (req: Request, res: Response) => {
 };
 
 const update = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan("update", userModel);
+  ForbiddenError.from(req.ability).throwUnlessCan(
+    "update",
+    userModel.modelName
+  );
 
   if (!isValidObjectId(req.params.id)) {
     throw new NotFound("User is not found");
@@ -47,7 +50,10 @@ const update = async (req: Request, res: Response) => {
 };
 
 const create = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan("create", userModel);
+  ForbiddenError.from(req.ability).throwUnlessCan(
+    "create",
+    userModel.modelName
+  );
 
   const user = new userModel(req.body);
 
@@ -57,7 +63,10 @@ const create = async (req: Request, res: Response) => {
 };
 
 const destroy = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan("delete", userModel);
+  ForbiddenError.from(req.ability).throwUnlessCan(
+    "delete",
+    userModel.modelName
+  );
 
   const user = await userModel.findById(req.params.id);
 
