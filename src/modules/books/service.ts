@@ -97,10 +97,13 @@ const returnBook = async (req: Request, res: Response) => {
   const book = await bookModel.findOne({
     id: req.params.id,
     last_borrower: req.user?.id,
+    borrowed: true,
   });
 
   if (!book) {
-    throw new NotFound("You are not allowed to return this book");
+    throw new BadRequest(
+      "You are not allowed to return this book, its either borrowed by another user, not borrowed or does not exist."
+    );
   }
 
   book.set({ borrowed: false, last_borrower: undefined });
