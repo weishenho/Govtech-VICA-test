@@ -24,6 +24,7 @@ function configurePassport(passport: PassportStatic, app: Express) {
         secretOrKey: app.get("jwt.secret"),
         jwtFromRequest: (req: any) => req.headers.token,
       },
+      //@ts-ignore
       findUser
     )
   );

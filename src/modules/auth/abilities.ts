@@ -13,7 +13,7 @@ export default function defineAbilityFor(user: { role: string }) {
       break;
     case "member":
       can("read", "Book");
-      can("update", "Book", ["isBorrowed"]);
+      can("update", "Book", ["borrowed"]);
       break;
   }
 

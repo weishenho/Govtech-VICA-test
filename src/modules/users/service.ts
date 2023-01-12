@@ -74,7 +74,7 @@ const destroy = async (req: Request, res: Response) => {
     await user.remove();
   }
 
-  res.send({ item: user });
+  res.send({ data: user });
 };
 
 export { findAll, find, update, create, destroy };
