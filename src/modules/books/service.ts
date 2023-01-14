@@ -1,131 +1,36 @@
-import { NotFound, BadRequest } from "http-errors";
-import { Request, Response } from "express";
-import bookModel from "./model";
-import { isValidObjectId } from "mongoose";
-import { ForbiddenError } from "@casl/ability";
+import bookModel, { IBook } from "./model";
+import {
+  DocumentDefinition,
+  FilterQuery,
+  QueryOptions,
+  UpdateQuery,
+} from "mongoose";
 
-const findAll = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan("read", bookModel.modelName);
-  const books = await bookModel.find().populate("last_borrower");
-
-  res.send({ data: books });
+export const findBooks = async (query: FilterQuery<IBook>) => {
+  const users = await bookModel.find(query).lean();
+  return users;
 };
 
-const find = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan("read", bookModel.modelName);
-  if (!isValidObjectId(req.params.id)) {
-    throw new NotFound("Book is not found");
-  }
-
-  const book = await bookModel.findById(req.params.id);
-
-  if (!book) {
-    throw new NotFound("Book is not found");
-  }
-
-  res.send({ data: book });
+export const findBook = async (query: FilterQuery<IBook>) => {
+  return bookModel.findOne(query).lean();
 };
 
-const create = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan(
-    "create",
-    bookModel.modelName
-  );
-  const book = new bookModel(req.body);
-
-  await book.save();
-
-  res.send({ data: book });
+export const findAndUpdateBook = async (
+  query: FilterQuery<IBook>,
+  update: UpdateQuery<IBook>,
+  options: QueryOptions
+) => {
+  return bookModel.findOneAndUpdate(query, update, options);
 };
 
-const update = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan(
-    "update",
-    bookModel.modelName,
-    "*"
-  );
-  if (!isValidObjectId(req.params.id)) {
-    throw new NotFound("Book is not found");
-  }
-  const book = await bookModel.findById(req.params.id);
-  if (!book) {
-    throw new NotFound("Book is not found");
-  }
-  book.set(req.body);
-  await book.save();
-
-  res.send({ data: book });
+export const createBook = async (
+  input: DocumentDefinition<
+    Omit<IBook, "createdAt" | "updatedAt" | "dateJoined">
+  >
+) => {
+  return bookModel.create(input);
 };
 
-const borrowBook = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan(
-    "update",
-    bookModel.modelName,
-    "borrowed"
-  );
-  if (!isValidObjectId(req.params.id)) {
-    throw new NotFound("Book is not found");
-  }
-  const book = await bookModel.findById(req.params.id);
-
-  if (!book) {
-    throw new NotFound("Book is not found");
-  }
-
-  if (book.borrowed) {
-    throw new BadRequest("Book is already borrowed");
-  }
-  if (!req.user) {
-    throw new BadRequest("User not found");
-  }
-
-  book.set({ borrowed: req.body.borrowed, last_borrower: req.user?.id });
-  await book.save();
-
-  res.send({ data: book });
+export const deleteBook = async (query: FilterQuery<IBook>) => {
+  return bookModel.deleteOne(query);
 };
-
-const returnBook = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan(
-    "update",
-    bookModel.modelName,
-    "borrowed"
-  );
-  if (!isValidObjectId(req.params.id)) {
-    throw new NotFound("Book is not found");
-  }
-  const book = await bookModel.findOne({
-    id: req.params.id,
-    last_borrower: req.user?.id,
-    borrowed: true,
-  });
-
-  if (!book) {
-    throw new BadRequest(
-      "You are not allowed to return this book, its either borrowed by another user, not borrowed or does not exist."
-    );
-  }
-
-  book.set({ borrowed: false, last_borrower: undefined });
-  await book.save();
-
-  res.send({ data: book });
-};
-
-const destroy = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan(
-    "delete",
-    bookModel.modelName
-  );
-
-  const book = await bookModel.findById(req.params.id);
-
-  if (!book) {
-    throw new NotFound("Book is not found");
-  }
-  await book.remove();
-
-  res.send({ data: book });
-};
-
-export { create, update, destroy, find, findAll, borrowBook, returnBook };

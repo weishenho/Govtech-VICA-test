@@ -1,13 +1,13 @@
-import * as book from "./service";
+import * as book from "./controller";
 import express from "express";
 const router = express.Router();
 
-router.get("/book/", book.findAll);
-router.get("/book/:id", book.find);
-router.patch("/book/:id", book.update);
-router.patch("/borrowBook/:id", book.borrowBook);
-router.patch("/returnBook/:id", book.returnBook);
-router.delete("/book/:id", book.destroy);
-router.post("/book", book.create);
+router.get("/book/", book.getBooksHandler);
+router.get("/book/:id", book.getBookHandler);
+router.patch("/book/:id", book.updateBookHandler);
+router.patch("/borrowBook/:id", book.borrowBookHandler);
+router.patch("/returnBook/:id", book.returnBookHandler);
+router.delete("/book/:id", book.deleteBookHandler);
+router.post("/book", book.createBookHandler);
 
 export default router;
