@@ -1,80 +1,36 @@
-import { NotFound } from "http-errors";
-import { Request, Response } from "express";
-import userModel from "./model";
-import { isValidObjectId } from "mongoose";
-import { ForbiddenError } from "@casl/ability";
+import userModel, { IUser } from "./model";
+import {
+  DocumentDefinition,
+  FilterQuery,
+  QueryOptions,
+  UpdateQuery,
+} from "mongoose";
 
-const findAll = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan("read", userModel.modelName);
-  const users = await userModel.find({});
-
-  res.send({ data: users });
+export const findUsers = async (query: FilterQuery<IUser>) => {
+  const users = await userModel.find(query).lean();
+  return users;
 };
 
-const find = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan("read", userModel.modelName);
-
-  if (!isValidObjectId(req.params.id)) {
-    throw new NotFound("User is not found");
-  }
-
-  const user = await userModel.findById(req.params.id);
-
-  if (!user) {
-    throw new NotFound("User is not found");
-  }
-
-  res.send({ data: user });
+export const findUser = async (query: FilterQuery<IUser>) => {
+  return userModel.findOne(query).lean();
 };
 
-const update = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan(
-    "update",
-    userModel.modelName
-  );
-
-  if (!isValidObjectId(req.params.id)) {
-    throw new NotFound("User is not found");
-  }
-  const user = await userModel.findById(req.params.id);
-
-  if (!user) {
-    throw new NotFound("User is not found");
-  }
-
-  const { role, ...body } = req.body;
-  user.set(body);
-  await user.save();
-
-  res.send({ data: user });
+export const findAndUpdateUser = async (
+  query: FilterQuery<IUser>,
+  update: UpdateQuery<IUser>,
+  options: QueryOptions
+) => {
+  return userModel.findOneAndUpdate(query, update, options);
 };
 
-const create = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan(
-    "create",
-    userModel.modelName
-  );
-
-  const user = new userModel(req.body);
-
-  await user.save();
-
-  res.status(201).send({ data: user });
+export const createUser = async (
+  input: DocumentDefinition<
+    Omit<IUser, "createdAt" | "updatedAt" | "dateJoined">
+  >
+) => {
+  return userModel.create(input);
 };
 
-const destroy = async (req: Request, res: Response) => {
-  ForbiddenError.from(req.ability).throwUnlessCan(
-    "delete",
-    userModel.modelName
-  );
-
-  const user = await userModel.findById(req.params.id);
-
-  if (user) {
-    await user.remove();
-  }
-
-  res.send({ data: user });
+export const deleteUser = async (query: FilterQuery<IUser>) => {
+  return userModel.deleteOne(query);
 };
-
-export { findAll, find, update, create, destroy };

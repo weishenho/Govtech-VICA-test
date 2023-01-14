@@ -1,7 +1,14 @@
 import mongoose, { Schema } from "mongoose";
 
+export interface IUser {
+  name: string;
+  role: string;
+  dateJoined: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
-const User = new Schema(
+const userSchema = new Schema(
   {
     name: { type: String, unique: true, required: true },
     role: {
@@ -9,10 +16,10 @@ const User = new Schema(
       enum: ["admin", "editor", "member"],
       required: true,
     },
-    date_joined: { type: Date, default: Date.now },
+    dateJoined: { type: Date, default: Date.now },
   },
   {
     timestamps: true,
   }
 );
-export default mongoose.model("User", User);
+export default mongoose.model<IUser>("User", userSchema);
