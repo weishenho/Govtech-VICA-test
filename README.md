@@ -1,4 +1,4 @@
-# VICA Engineering Assessment Backend Solution
+# Backend Solution for VICA Engineering Assessment
 
 ## Task for Backend Development
 
@@ -54,6 +54,14 @@ Finally, also in your README file, explain and justify (50%):
 
 ## 4. Scalability of your project
 
+##### Scalability in terms of maintable code as the team and codebase grows
+
+I think its suitable for small to medium sized teams. To imporve on the scalability of the project perhaps we can use a well-organized, opinated framework which as NestJS. where it supports dependency injection which can enhance the testablility of codes. Futhermore the modules can be breakdown into micrososervices, therefore teams would only concern on the code base that they are assigned. Techniques which as CQRS/Event Sourcing can also be adopted to provide better reliability and interoperability between microservices. The natural of event sourcing also allows borrowing/returning of books to maintain a history of previous transaction, ie. previouse borrowers. With that being said technqiues such as cqrs/event sourcing have their downsides as well such as eventual consistency, where updated values are not immediately seen when queried.
+
+##### Scalability in terms of handling of traffic in production environment.
+
+Can apply horizontal/vertical scaling techniques where needed.
+Services which Amazon Elastic Container Service (Amazon ECS) allows the application to scale according based on the traffic.
 
 ## Run the App
 
