@@ -64,6 +64,29 @@ Can apply horizontal/vertical scaling techniques where needed.
 Services which Amazon Elastic Container Service (Amazon ECS) allows the application to scale according based on the traffic.
 
 ## Run the App
+```
+restore db
+mongorestore -d govteh db
+```
 
     npm install
     npm run dev
+
+### Create Session
+with user's name
+```
+curl --request POST \
+  --url http://localhost:5001/api/session \
+  --header 'Content-Type: application/json' \
+  --data '{
+	"name":"admin1"
+
+}'
+```
+Put access token in "token" header for future requests
+
+### Routes
+- GET/POST/PATCH/DELETE /api/users/{id}
+- GET/POST/PATCH/DELETE /api/book/{id}
+- PATCH /api/borrowBook/{id}
+- PATCH /api/returnBook/{id}
