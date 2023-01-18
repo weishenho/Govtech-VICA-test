@@ -14,7 +14,7 @@ export const createUserHandler = async (req: Request, res: Response) => {
   ForbiddenError.from(req.ability).throwUnlessCan("create", "User");
   const body = req.body;
   const user = await createUser(body);
-  res.status(201).send({ data: user });
+  res.status(201).send(user);
 };
 
 export const updateUserHandler = async (req: Request, res: Response) => {
@@ -39,7 +39,7 @@ export const updateUserHandler = async (req: Request, res: Response) => {
 export const getUsersHandler = async (req: Request, res: Response) => {
   ForbiddenError.from(req.ability).throwUnlessCan("read", "User");
   const users = await findUsers({});
-  res.send({ data: users });
+  res.send(users);
 };
 
 export const getUserHandler = async (req: Request, res: Response) => {
@@ -55,7 +55,7 @@ export const getUserHandler = async (req: Request, res: Response) => {
     throw new NotFound("User is not found");
   }
 
-  res.send({ data: user });
+  res.send(user);
 };
 
 export const deleteUserHandler = async (req: Request, res: Response) => {
